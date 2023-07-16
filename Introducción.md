@@ -21,4 +21,8 @@ Una vez descargada la base de datos, debe abrir SSMS y conectarse al motor de ba
 Ya conectado, debe buscar en el listado que vera a la izquierda un fichero con nombre "Databases", realizar clic derecho sobre este y del listado desplegable seleccionar "Restore Database" o "Restaurar Base de datos".
 
 Vera que se le abrio una nueva ventana. En esta ventana debera colocarse en la opcion del panel izquierdo de "General" y luego seleccionar "Device" para finalmente hacer clic en el boton que contiene "...". 
-En la ventana que se le abre debe seleecionar "Add" o "Agregar" y luego debe buscar el fichero donde tiene almacenado el archivo que descargo anteriormente y seleccionarlo.  
+En la ventana que se le abre debe seleecionar "Add" o "Agregar" y luego debe buscar el fichero donde tiene almacenado el archivo que descargo anteriormente y seleccionarlo.
+
+Selecciones "Ok" y espere que realiza la carga de la base de datos.
+
+Una vez finalizado estaremos listos para continuar.

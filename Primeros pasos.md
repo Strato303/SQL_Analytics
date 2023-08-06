@@ -6,7 +6,7 @@
 
 Iniciando el reconocimiento de la BBDD y gracias a la facilitacion que tiene en particular esta BBDD realizaremos los diagramas de cada una de las areas de la empresa. Para este caso las 5 areas.
 
-* Human Reseources
+* Human Resources
 * Person
 * Production
 * Purchasing
@@ -20,11 +20,10 @@ Como podremos ver los diagramas mas complejos son los de Sales y Prodution.
 
 En la etapa del analisis exploratorio tenemos como objetivo: 
 
+  * Entender el negocio y como se almacenan los datos.
   * Entender los datos que contiene cada tabla.
   * Verificar e identificar valores nulos y atipicos.
   * Analizar los tipos de datos y verificar si nos encontramos con errores.
 
-### Human Reseources
-
-Para iniciar identificamos la tabla de hechos y de dimensiones.
+https://dataedo.com/download/AdventureWorks.pdf
 

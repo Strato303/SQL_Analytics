@@ -113,3 +113,54 @@ FROM HumanResources.Employee
 |Promedio_Antiguedad	|
 |-----------------------|
 |13			|
+
+#### ¿Que cantidad de empleados trabajan en cada area?
+
+SELECT Name, count(EMP.BusinessEntityID) Empleados_por_Area
+FROM HumanResources.Department dep
+Join HumanResources.EmployeeDepartmentHistory EDH ON EDH.DepartmentID= dep.DepartmentID
+Join HumanResources.Employee EMP ON EMP.BusinessEntityID = EDH.BusinessEntityID
+WHERE EDH.ENdDate IS NULL
+group by Name
+
+| Name                       | Empleados_por_Area |
+|----------------------------|-------------------|
+| Engineering                | 6                 |
+| Tool Design                | 4                 |
+| Sales                      | 18                |
+| Marketing                  | 9                 |
+| Purchasing                 | 12                |
+| Research and Development   | 4                 |
+| Production                 | 179               |
+| Production Control         | 6                 |
+| Human Resources            | 6                 |
+| Finance                    | 10                |
+| Information Services       | 10                |
+| Document Control           | 5                 |
+| Quality Assurance          | 6                 |
+| Facilities and Maintenance | 7                 |
+| Shipping and Receiving     | 6                 |
+| Executive                  | 2                 |
+
+
+### Creacion de vistas
+
+#### Se crea la vista EMPLEADO para poder utilizarla en herramientas BI
+
+CREATE VIEW EMPLEADOS AS
+SELECT	(P.FirstName + ' ' +P.LastName) Name,
+		EMP.JobTitle,
+		DEP.Name AS Department,
+		DEP.GroupName as Area,
+		EMP.BirthDate,
+		EMP.MaritalStatus,
+		EMP.Gender,
+		EMP.SalariedFlag,
+		EMP.VacationHours,
+		EMP.SickLeaveHours,
+		EMP.HireDate,
+		P.PersonType
+FROM HumanResources.Employee EMP
+LEFT JOIN Person.Person P ON P.BusinessEntityID = EMP.BusinessEntityID
+LEFT JOIN HumanResources.EmployeeDepartmentHistory EDH ON EMP.BusinessEntityID = EDH.BusinessEntityID
+LEFT JOIN HumanResources.Department DEP ON EDH.DepartmentID= DEP.DepartmentID

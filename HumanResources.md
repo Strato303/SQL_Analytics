@@ -10,6 +10,10 @@ Tablas HR
 * JobCandidate
 * Shift
 
+ESQUEMA
+
+![image](https://github.com/Strato303/SQL_Analytics/assets/77212167/cffdbe0b-872c-406b-88af-4855878edcf3)
+
 ## Preguntas a resolver analizando datos con SQL
 
 #### ¿Que cantidad de empleados tuvo la empresa en toda la historia?
@@ -142,25 +146,48 @@ group by Name
 | Shipping and Receiving     | 6                 |
 | Executive                  | 2                 |
 
+#### ¿De que nacionalidad son los empleados?
+
+SELECT E.BusinessEntityID, COUNT(Distinct E.BusinessEntityID) AS PersonCount
+FROM Person.CountryRegion CR <br>
+LEFT JOIN Person.StateProvince SP ON CR.CountryRegionCode = SP.CountryRegionCode  <br>
+LEFT JOIN Person.Address AD ON AD.StateProvinceID = SP.StateProvinceID <br>
+LEFT JOIN Person.BusinessEntityAddress BEA ON BEA.AddressID = AD.AddressID <br>
+LEFT JOIN Person.BusinessEntity BE ON BE.BusinessEntityID = BEA.BusinessEntityID <br>
+LEFT JOIN Person.Person P ON P.BusinessEntityID = BE.BusinessEntityID <br>
+LEFT JOIN HumanResources.Employee E ON E.BusinessEntityID = P.BusinessEntityID <br>
+Where P.PersonType IN ('EM','SP') <br>
+GROUP BY CR.CountryRegionCode, CR.Name <br>
+
+| CountryRegionCode | Name            | PersonCount |
+|-------------------|-----------------|-------------|
+| AU                | Australia       | 1           |
+| CA                | Canada          | 2           |
+| DE                | Germany         | 1           |
+| FR                | France          | 1           |
+| GB                | United Kingdom  | 1           |
+| US                | United States   | 284         |
+
 
 ### Creacion de vistas
 
 #### Se crea la vista EMPLEADO para poder utilizarla en herramientas BI
 
-CREATE VIEW EMPLEADOS AS
-SELECT	(P.FirstName + ' ' +P.LastName) Name,
-		EMP.JobTitle,
-		DEP.Name AS Department,
-		DEP.GroupName as Area,
-		EMP.BirthDate,
-		EMP.MaritalStatus,
-		EMP.Gender,
-		EMP.SalariedFlag,
-		EMP.VacationHours,
-		EMP.SickLeaveHours,
-		EMP.HireDate,
-		P.PersonType
-FROM HumanResources.Employee EMP
-LEFT JOIN Person.Person P ON P.BusinessEntityID = EMP.BusinessEntityID
-LEFT JOIN HumanResources.EmployeeDepartmentHistory EDH ON EMP.BusinessEntityID = EDH.BusinessEntityID
-LEFT JOIN HumanResources.Department DEP ON EDH.DepartmentID= DEP.DepartmentID
+CREATE VIEW EMPLEADOS AS<br>
+SELECT (P.FirstName + ' ' + P.LastName) Name,<br>
+       EMP.JobTitle,
+       EMP.BirthDate,
+       EMP.MaritalStatus,
+       EMP.Gender,<br>
+       EMP.SalariedFlag,
+       EMP.VacationHours,
+       EMP.SickLeaveHours,
+       EMP.HireDate,<br>
+       DEP.Name AS Department,
+       DEP.GroupName as Area,
+       P.PersonType<br>
+FROM HumanResources.Employee EMP <br>
+LEFT JOIN Person.Person P ON P.BusinessEntityID = EMP.BusinessEntityID <br>
+LEFT JOIN HumanResources.EmployeeDepartmentHistory EDH ON EMP.BusinessEntityID = EDH.BusinessEntityID <br>
+LEFT JOIN HumanResources.Department DEP ON EDH.DepartmentID = DEP.DepartmentID <br>
+

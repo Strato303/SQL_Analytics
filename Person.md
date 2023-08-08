@@ -13,14 +13,13 @@ ESQUEMA
 
 #### ¿De que nacionalidad son los empleados?
 
-SELECT E.BusinessEntityID, COUNT(Distinct E.BusinessEntityID) AS PersonCount
+SELECT CR.CountryRegionCode, CR.Name, COUNT(Distinct P.BusinessEntityID) AS PersonCount <br>
 FROM Person.CountryRegion CR <br>
 LEFT JOIN Person.StateProvince SP ON CR.CountryRegionCode = SP.CountryRegionCode  <br>
 LEFT JOIN Person.Address AD ON AD.StateProvinceID = SP.StateProvinceID <br>
 LEFT JOIN Person.BusinessEntityAddress BEA ON BEA.AddressID = AD.AddressID <br>
 LEFT JOIN Person.BusinessEntity BE ON BE.BusinessEntityID = BEA.BusinessEntityID <br>
 LEFT JOIN Person.Person P ON P.BusinessEntityID = BE.BusinessEntityID <br>
-LEFT JOIN HumanResources.Employee E ON E.BusinessEntityID = P.BusinessEntityID <br>
 Where P.PersonType IN ('EM','SP') <br>
 GROUP BY CR.CountryRegionCode, CR.Name <br>
 

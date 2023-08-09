@@ -9,7 +9,17 @@ ESQUEMA
 
 ## Preguntas a resolver analizando datos con SQL
 
+#### ¿Con que paises tiene relacion la empresa?
 
+SELECT CR.CountryRegionCode, CR.Name
+FROM Person.CountryRegion CR
+LEFT JOIN Person.StateProvince SP ON CR.CountryRegionCode = SP.CountryRegionCode 
+LEFT JOIN Person.Address AD ON AD.StateProvinceID = SP.StateProvinceID
+LEFT JOIN Person.BusinessEntityAddress BEA ON BEA.AddressID = AD.AddressID
+LEFT JOIN Person.BusinessEntity BE ON BE.BusinessEntityID = BEA.BusinessEntityID
+LEFT JOIN Person.Person P ON P.BusinessEntityID = BE.BusinessEntityID
+GROUP BY CR.CountryRegionCode, CR.Name
+HAVING COUNT(Distinct P.BusinessEntityID)>0;
 
 #### ¿De que nacionalidad son los empleados?
 

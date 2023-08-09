@@ -15,3 +15,15 @@ Para seguir este proyecto deberas tener instalado SQL Server y SQL Server Manage
 Para realizar esto seguiremos las indicaciones de Microsoft en el link en copia debajo.
 
 https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver16&tabs=ssms
+
+# Primeros pasos
+
+Iniciaremos por la seccion llamada primeros pasos con el objetivo de reconocer la BBDD, las tablas y las relaciones entre ellas.
+
+# Analisis
+
+En esta etapa separaremos el analisis en 2 partes. 
+
+## Analisis exploratorio
+
+En esta etapa seguiremos conociendo los datos, pero desde un aspecto mas analitico calculando ratios

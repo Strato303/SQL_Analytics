@@ -101,15 +101,15 @@ FROM HumanResources.Employee
 GROUP BY DATEDIFF(year, HireDate, CONVERT(varchar, GETDATE(),23))
 
 | Años | Total_Empleado_por_Antiguedad |
-|------|------------------------------|
-| 10   | 3                            |
-| 11   | 4                            |
-| 12   | 16                           |
-| 13   | 38                           |
-| 14   | 148                          |
-| 15   | 74                           |
-| 16   | 6                            |
-| 17   | 1                            |
+|------|-------------------------------|
+| 10   | 3                             |
+| 11   | 4                             |
+| 12   | 16                            |
+| 13   | 38                            |
+| 14   | 148                           |
+| 15   | 74                            |
+| 16   | 6                             |
+| 17   | 1                             |
 
 SELECT AVG (DATEDIFF(year, HireDate, CONVERT(varchar, GETDATE(),23))) Promedio_Antiguedad
 FROM HumanResources.Employee
@@ -118,16 +118,34 @@ FROM HumanResources.Employee
 |-----------------------|
 |13			|
 
-#### ¿Que cantidad de empleados trabajan en cada area?
+#### ¿Que cantidad de empleados trabajan en cada Agrupamiento de areas?
 
-SELECT Name, count(EMP.BusinessEntityID) Empleados_por_Area
+SELECT GroupName AS Groups,  count(EMP.BusinessEntityID) Employees_By_Group
 FROM HumanResources.Department dep
 Join HumanResources.EmployeeDepartmentHistory EDH ON EDH.DepartmentID= dep.DepartmentID
 Join HumanResources.Employee EMP ON EMP.BusinessEntityID = EDH.BusinessEntityID
-WHERE EDH.ENdDate IS NULL
-group by Name
+WHERE EDH.EndDate IS NULL
+GRUOP BY GroupName
 
-| Name                       | Empleados_por_Area |
+| Group                                  | Employees_By_Group |
+|----------------------------------------|--------------------|
+| Executive General and Administration   | 35                 |
+| Inventory Management                   | 18                 |
+| Manufacturing                          | 185                |
+| Quality Assurance                      | 11                 |
+| Research and Development               | 14                 |
+| Sales and Marketing                    | 27                 |
+
+#### ¿Que cantidad de empleados trabajan en cada area?
+
+SELECT Name AS Department, count(EMP.BusinessEntityID) Employees_by_Department
+FROM HumanResources.Department dep
+Join HumanResources.EmployeeDepartmentHistory EDH ON EDH.DepartmentID= dep.DepartmentID
+Join HumanResources.Employee EMP ON EMP.BusinessEntityID = EDH.BusinessEntityID
+WHERE EDH.EndDate IS NULL
+GRUOP BY Name
+
+| Department                 | Employees_by_Department |
 |----------------------------|-------------------|
 | Engineering                | 6                 |
 | Tool Design                | 4                 |
@@ -168,26 +186,113 @@ GROUP BY CR.CountryRegionCode, CR.Name <br>
 | GB                | United Kingdom  | 1           |
 | US                | United States   | 284         |
 
+#### Promedio de Antiguedad de los Empleados en la Empresa por Grupo de Departamentos
 
-### Creacion de vistas
+SELECT GroupName AS Groups,  
+	AVG(dbo.YEARS_TODAY(HireDate)) Years_By_Group
+FROM HumanResources.Department dep
+Join HumanResources.EmployeeDepartmentHistory EDH ON EDH.DepartmentID= dep.DepartmentID
+Join HumanResources.Employee EMP ON EMP.BusinessEntityID = EDH.BusinessEntityID
+WHERE EDH.ENdDate IS NULL
+group by GroupName
+
+| Groups                                 | Years_By_Group |
+|----------------------------------------|----------------|
+| Executive General and Administration   | 14             |
+| Inventory Management                   | 13             |
+| Manufacturing                          | 14             |
+| Quality Assurance                      | 14             |
+| Research and Development               | 14             |
+| Sales and Marketing                    | 12             |
+
+#### Promedio de Antiguedad de los Empleados en la Empresa por Departamentos
+
+* En este caso se utiliza una funcion YEARS_TODAY creada mas abajo en este documento.
+
+SELECT Name AS Department,  
+	AVG(dbo.YEARS_TODAY(HireDate)) Years_By_Department
+FROM HumanResources.Department dep
+Join HumanResources.EmployeeDepartmentHistory EDH ON EDH.DepartmentID= dep.DepartmentID
+Join HumanResources.Employee EMP ON EMP.BusinessEntityID = EDH.BusinessEntityID
+WHERE EDH.ENdDate IS NULL
+group by Name
+
+* Aqui tenemos el mismo codigo sin utilizar la funcion
+
+SELECT Name AS Department,  
+	AVG(DATEDIFF(year, HireDate, CONVERT(varchar, GETDATE(),23))) Years_By_Department
+FROM HumanResources.Department dep
+Join HumanResources.EmployeeDepartmentHistory EDH ON EDH.DepartmentID= dep.DepartmentID
+Join HumanResources.Employee EMP ON EMP.BusinessEntityID = EDH.BusinessEntityID
+WHERE EDH.ENdDate IS NULL
+group by Name
+
+| Department                  | Years_By_Department |
+|-----------------------------|---------------------|
+| Document Control            | 14                  |
+| Engineering                 | 14                  |
+| Executive                   | 14                  |
+| Facilities and Maintenance  | 13                  |
+| Finance                     | 14                  |
+| Human Resources             | 14                  |
+| Information Services        | 14                  |
+| Marketing                   | 13                  |
+| Production                  | 14                  |
+| Production Control          | 14                  |
+| Purchasing                  | 13                  |
+| Quality Assurance           | 14                  |
+| Research and Development    | 14                  |
+| Sales                       | 11                  |
+| Shipping and Receiving      | 14                  |
+| Tool Design                 | 14                  |
+
+-----------------------------------------------------------------------------------------------------------
+
+## Creacion de vistas
 
 #### Se crea la vista EMPLEADO para poder utilizarla en herramientas BI
 
-CREATE VIEW EMPLEADOS AS<br>
-SELECT (P.FirstName + ' ' + P.LastName) Name,<br>
+CREATE VIEW VW_EMPLEADOS AS
+SELECT (P.FirstName + ' ' + P.LastName) Name,
        EMP.JobTitle,
        EMP.BirthDate,
        EMP.MaritalStatus,
-       EMP.Gender,<br>
+       EMP.Gender,
        EMP.SalariedFlag,
        EMP.VacationHours,
        EMP.SickLeaveHours,
-       EMP.HireDate,<br>
+       EMP.HireDate,
+	   SH.Name AS Shift,
        DEP.Name AS Department,
        DEP.GroupName as Area,
-       P.PersonType<br>
-FROM HumanResources.Employee EMP <br>
-LEFT JOIN Person.Person P ON P.BusinessEntityID = EMP.BusinessEntityID <br>
-LEFT JOIN HumanResources.EmployeeDepartmentHistory EDH ON EMP.BusinessEntityID = EDH.BusinessEntityID <br>
-LEFT JOIN HumanResources.Department DEP ON EDH.DepartmentID = DEP.DepartmentID <br>
+	   CR.Name AS Country,
+	   SP.Name AS State_Province,
+       P.PersonType
+FROM HumanResources.Employee EMP
+LEFT JOIN Person.Person P ON P.BusinessEntityID = EMP.BusinessEntityID 
+LEFT JOIN HumanResources.EmployeeDepartmentHistory EDH ON EMP.BusinessEntityID = EDH.BusinessEntityID
+LEFT JOIN HumanResources.Department DEP ON EDH.DepartmentID = DEP.DepartmentID
+LEFT JOIN HumanResources.Shift SH ON SH.ShiftID = EDH.ShiftID
+LEFT JOIN Person.BusinessEntity BE ON P.BusinessEntityID = BE.BusinessEntityID 
+LEFT JOIN Person.BusinessEntityAddress BEA ON BEA.BusinessEntityID = BE.BusinessEntityID
+LEFT JOIN Person.Address AD ON AD.AddressID = BEA.AddressID
+LEFT JOIN Person.StateProvince SP ON  SP.StateProvinceID = AD.StateProvinceID
+LEFT JOIN Person.CountryRegion CR ON CR.CountryRegionCode = SP.CountryRegionCode
 
+-----------------------------------------------------------------------------------------------------------
+
+## Creacion de Funciones 
+
+#### Funcion YEARS_TODAY
+
+Esta función calcula la diferencia en años entre una fecha dada y la fecha actual. 
+Devuelve el resultado como un valor entero (INT), que representa el número de años de diferencia entre las dos fechas.
+
+CREATE FUNCTION YEARS_TODAY (@Fecha Date)
+RETURNS  INT
+AS
+BEGIN
+	DECLARE @Year INT
+	SET @Year = DATEDIFF(year, @Fecha, CONVERT(varchar, GETDATE(),23))
+	RETURN @Year
+END;

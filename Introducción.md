@@ -20,10 +20,3 @@ https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure?v
 
 Iniciaremos por la seccion llamada primeros pasos con el objetivo de reconocer la BBDD, las tablas y las relaciones entre ellas.
 
-# Analisis
-
-En esta etapa separaremos el analisis en 2 partes. 
-
-## Analisis exploratorio
-
-En esta etapa seguiremos conociendo los datos, pero desde un aspecto mas analitico calculando ratios

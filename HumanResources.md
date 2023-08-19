@@ -246,6 +246,35 @@ group by Name
 | Shipping and Receiving      | 14                  |
 | Tool Design                 | 14                  |
 
+#### Crecimiento de la cantidad de empleados en cada año.
+
+WITH HireYears (Years) AS 
+(SELECT DISTINCT YEAR(HireDate) AS Years
+    FROM HumanResources.employee)
+
+SELECT
+    HireYears.Years,
+    COUNT(*) AS Crecimiento
+FROM 
+    HireYears
+LEFT JOIN 
+    HumanResources.employee EMP ON YEAR(EMP.HireDate) <= HireYears.Years
+GROUP BY 
+    HireYears.Years
+ORDER BY 
+    HireYears.Years;
+
+| Years | Crecimiento |
+|-------|-------------|
+| 2006  |     1       |
+| 2007  |     7       |
+| 2008  |     81      |
+| 2009  |     229     |
+| 2010  |     267     |
+| 2011  |     283     |
+| 2012  |     287     |
+| 2013  |     290     |
+
 -----------------------------------------------------------------------------------------------------------
 
 ## Creacion de vistas
